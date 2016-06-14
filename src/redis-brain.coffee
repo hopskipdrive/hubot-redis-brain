@@ -35,7 +35,6 @@ module.exports = (robot) ->
 
 
   info   = Url.parse redisUrl, true
-  robot.logger.info JSON.stringify info
   prefix = info.path?.replace('/', '') or 'hubot'
   client = if info.auth then Redis.createClient({host:info.hostname,port:info.port,password:info.auth}) else Redis.createClient({host:info.hostname,port:info.port})
 
@@ -63,11 +62,7 @@ module.exports = (robot) ->
       robot.logger.error err.stack
 
   client.on "ready", ->
-    robot.logger.debug "hubot-redis-brain: Successfully connected to Redis"
-    getData()
-
-  client.on "connect", ->
-    robot.logger.debug "hubot-redis-brain: Successfully connected to Redis"
+    robot.logger.info "hubot-redis-brain: Successfully connected to Redis"
     getData()
 
   robot.brain.on 'save', (data = {}) ->
