@@ -35,6 +35,7 @@ module.exports = (robot) ->
 
 
   info   = Url.parse redisUrl, true
+  robot.logger.info JSON.stringify info
   client = if info.auth then Redis.createClient(info.port, info.hostname, {no_ready_check: true}) else Redis.createClient(info.port, info.hostname)
   prefix = info.path?.replace('/', '') or 'hubot'
 
