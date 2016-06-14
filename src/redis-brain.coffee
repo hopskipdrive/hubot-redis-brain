@@ -36,8 +36,8 @@ module.exports = (robot) ->
 
   info   = Url.parse redisUrl, true
   robot.logger.info JSON.stringify info
-  client = if info.auth then Redis.createClient(info.port, info.hostname, {no_ready_check: true}) else Redis.createClient(info.port, info.hostname)
   prefix = info.path?.replace('/', '') or 'hubot'
+  client = if info.auth then Redis.createClient({host:info.host,port:info.port,password:info.auth}) else Redis.createClient(info.port, info.hostname)
 
   robot.brain.setAutoSave false
 
@@ -53,15 +53,6 @@ module.exports = (robot) ->
         robot.brain.mergeData {}
 
       robot.brain.setAutoSave true
-
-  if info.auth
-    client.auth info.auth.split(":")[1], (err) ->
-      if err
-        robot.logger.error "hubot-redis-brain: Failed to authenticate to Redis"
-        robot.logger.error err.stack
-      else
-        robot.logger.info "hubot-redis-brain: Successfully authenticated to Redis"
-        getData()
 
   client.on "error", (err) ->
     if /ECONNREFUSED/.test err.message
