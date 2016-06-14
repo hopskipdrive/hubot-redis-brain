@@ -55,6 +55,8 @@ module.exports = (robot) ->
       robot.brain.setAutoSave true
 
   client.on "error", (err) ->
+    robot.logger.error "caught redis client error"
+    robot.logger.error err.stack
     if /ECONNREFUSED/.test err.message
 
     else
